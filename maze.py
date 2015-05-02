@@ -9,7 +9,8 @@ def makeMaze(rowLength):
 	for i in range(rowLength):
 		print(grid[i])
 	
-	parseGrid(grid)
+	return grid
+
 
 def makeRandomRow(rowLength):
 	row = []
@@ -21,16 +22,25 @@ def makeRandomRow(rowLength):
 
 	return row
 
-
+#Finds and returns all pairs of adjacent 0s. 
 def parseGrid(grid):
+	result =[] 
 	rowLength = len(grid[0])
 	for i in range(rowLength):
 		for j in range(rowLength):
 			if grid[i][j] == '0':
 				adjacentPositions = getPossibleConnections(i, j, rowLength)
 				for position in adjacentPositions:
-					if grid[position[0]][position[1]] == '0':
-						print('(' + str(i) + ',' + str(j) + ')' + ' to ' + '(' + str(position[0]) + ',' + str(position[1]) + ')') 
+					x = position[0]
+					y = position[1]
+					if grid[x][y] == '0':
+						if not ((x, y), (i, j)) in result:	
+							result.append(((i, j), (x, y)))
+#print('(' + str(i) + ',' + str(j) + ')' + ' to ' 
+#+ '(' + str(position[0]) + ',' + str(position[1]) + ')') 
+
+	return result
+
 
 def getPossibleConnections(i, j, rowLength):
 	result = []
@@ -39,14 +49,23 @@ def getPossibleConnections(i, j, rowLength):
 	jBigEnough = j-1 >= 0
 	jSmallEnough = j+1 < rowLength
 
-	if iBigEnough and jBigEnough: result.append((i-1, j-1))
-	if iSmallEnough and jBigEnough: result.append((i+1, j-1))
-	if iBigEnough and jSmallEnough: result.append((i-1, j+1))
-	if iSmallEnough and jSmallEnough: result.append((i+1, j+1))
+	#diagonals:
+	# if iBigEnough and jBigEnough: result.append((i-1, j-1))
+	# if iSmallEnough and jBigEnough: result.append((i+1, j-1))
+	# if iBigEnough and jSmallEnough: result.append((i-1, j+1))
+	# if iSmallEnough and jSmallEnough: result.append((i+1, j+1))
 
+	if iBigEnough: result.append((i-1, j))
+	if iSmallEnough: result.append((i+1, j))
+	if jBigEnough: result.append((i, j-1))
+	if jSmallEnough: result.append((i, j+1))
 	return result	
 
 mazeSize = sys.argv[1]
 
-makeMaze(int(mazeSize))
+maze = makeMaze(int(mazeSize))
+pairs = parseGrid(maze)
+print(pairs)
+
+
 
