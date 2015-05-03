@@ -1,6 +1,7 @@
 import random
 import sys
 
+#Creates a random maze of size rowLength by rowLength. 
 def makeMaze(rowLength):
 	grid = [];
 	for i in range(rowLength):
@@ -8,7 +9,7 @@ def makeMaze(rowLength):
 	
 	return grid;
 
-
+#Creates a random row of length rowLength. 
 def makeRandomRow(rowLength):
 	row = [];
 	for i in range(rowLength):
@@ -20,7 +21,8 @@ def makeRandomRow(rowLength):
 	return row;
 
 
-#Finds and returns all pairs of horizontally/vertically adjacent 0s. 
+#Finds and returns all pairs of horizontally/vertically adjacent 0s 
+#in the given grid. 
 def parseGrid(grid):
 	result = []; 
 	rowLength = len(grid[0]);
@@ -37,7 +39,9 @@ def parseGrid(grid):
 
 	return result;
 
-
+#For a given pair of indeces (i, j), returns some or all of the positions 
+#in the grid to the left, right, up, and down, depending on the size of i and 
+#j relative to rowLength.  
 def getPossibleConnections(i, j, rowLength):
 	result = [];
 	iBigEnough = i-1 >= 0;
@@ -58,7 +62,8 @@ def getPossibleConnections(i, j, rowLength):
 
 	return result;
 
-
+#Constructs an adjacency list graph given pairs of tuples representing positions
+#in a grid. 
 def makeGraph(pairs):
 	graph = {};
 	for pair in pairs:
@@ -79,7 +84,8 @@ def makeGraph(pairs):
 
 	return graph;
 
-
+#Performs a breadth-first search to find the shortest path from the given 
+#starting position to the given end position in the given adjacency-list graph. 
 def bfs(start, end, graph):
 	stack = [(start, [start])];
 
@@ -97,37 +103,77 @@ def bfs(start, end, graph):
 	return False
 
 
+#Prints an ASCII representation of the given maze. 
+#Here maze is in char[][] form and path is either a list of tuples from start to 
+#finish or false (in which case the bare maze will be printed). 
 def printMaze(maze, path):
 	mazeSize = len(maze[0]);
-	if not path:
-		for i in range(mazeSize):
-			row = '';
-			for j in range(mazeSize):
-				if maze[i][j] == '0':
-					row += '0';
-				else:
-					row += '.';
-			print(row);
-	else:
-		for i in range(mazeSize):
-			row = '';
-			for j in range(mazeSize):
-				if (i, j) in path:
-					row += getAlphabetIndex(path.index((i, j)));
-				elif maze[i][j] == '0':
-					row += '0';
-				else:
-					row += '.';
-			print(row);
+	wall = ':---';
+	topRow = ': v ';
+	bottomRow = '';
+
+	for i in range(mazeSize-1):
+		topRow += wall;
+	topRow += ':';
+
+	for i in range(mazeSize):
+		bottomRow += wall;
+	bottomRow += ':';
+
+	print(topRow);
+	row = '';
+	rowFloor = '';
+	for i in range(mazeSize):
 		
-def getAlphabetIndex(index):
+		row += '|';
+		rowFloor += ':';
+
+		for j in range(mazeSize):
+			currentPosition = maze[i][j];
+			jSmall = j < mazeSize - 1;
+			iSmall = i < mazeSize - 1;
+
+			if (not jSmall) and (not iSmall):
+				row += '   >'; #exit
+			elif jSmall:
+				if maze[i][j+1] != currentPosition:
+					row += '   |';
+				else:
+					row += '    '; #4 spaces
+			else:
+				row += '   |'; 
+
+			#if i, j in path: change two chars from end of row to letter. 
+			if path and (i, j) in path:
+				step = getAlphabetStep(path.index((i, j)));
+				rowLen = len(row);
+				row = row[0: rowLen - 3] + step + row[rowLen - 2:];
+			
+			if iSmall:
+				if maze[i+1][j] != currentPosition:
+					rowFloor += '---:';
+				else:
+					rowFloor += '   :';
+
+		print(row);
+		if iSmall: print(rowFloor);
+		row = '';
+		rowFloor = '';
+	print(bottomRow);
+
+#return the character of position index in the alphabet (with a = 0). 
+def getAlphabetStep(index):
 	return str(chr(ord('a') + index));
 
 
 #Command line argument is size of the maze. 
-mazeSize = int(sys.argv[1]);
-path = [];
 
+mazeSize = int(sys.argv[1]);
+while mazeSize == 1:
+	print('C\'mon, that\'s not a maze.');
+	mazeSize = int(input('Enter another size: '));
+
+path = [];
 #keep making random mazes until we find one with a path from the top left
 #corner to the bottom right corner. 
 while not path:
@@ -135,6 +181,8 @@ while not path:
 	graph = makeGraph(parseGrid(maze));
 	path = bfs((0, 0), (mazeSize - 1, mazeSize - 1), graph);
 
+print '';
 printMaze(maze, False);
-print(path);
+print '';
+print 'solution:'
 printMaze(maze, path);
