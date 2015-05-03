@@ -6,9 +6,6 @@ def makeMaze(rowLength):
 	for i in range(rowLength):
 		grid.append(makeRandomRow(rowLength));
 	
-	# for i in range(rowLength):
-	# 	print(grid[i])
-	
 	return grid;
 
 
@@ -37,8 +34,6 @@ def parseGrid(grid):
 					if grid[x][y] == '0':
 						if not ((x, y), (i, j)) in result:	
 							result.append(((i, j), (x, y)));
-#print('(' + str(i) + ',' + str(j) + ')' + ' to ' 
-#+ '(' + str(position[0]) + ',' + str(position[1]) + ')') 
 
 	return result;
 
@@ -64,26 +59,60 @@ def getPossibleConnections(i, j, rowLength):
 	return result;
 
 
-mazeSize = sys.argv[1];
-maze = makeMaze(int(mazeSize));
-pairs = parseGrid(maze);
+def makeGraph(pairs):
+	graph = {};
+	for pair in pairs:
+		pairOne = pair[0];
+		pairTwo = pair[1];
 
-graph = {};
+		if(pairTwo == None): print('what');
 
-for pair in pairs:
-	pairOne = pair[0];
-	pairTwo = pair[1];
+		if not pairOne in graph:
+			graph[pairOne] = [pairTwo];
+		else :
+			graph[pairOne].append(pairTwo);
 
-	if(pairTwo == None): print('what');
+		if not pairTwo in graph:
+			graph[pairTwo] = [pairOne];
+		else :
+			graph[pairTwo].append(pairOne);
 
-	if not pairOne in graph:
-		graph[pairOne] = [pairTwo];
-	else :
-		graph[pairOne].append(pairTwo);
+	return graph;
 
-	if not pairTwo in graph:
-		graph[pairTwo] = [pairOne];
-	else :
-		graph[pairTwo].append(pairOne);
 
-print(graph)
+def bfs(start, end, graph):
+	stack = [(start, [start])];
+
+	while stack:
+		(node, path) = stack.pop();
+		
+		if node in graph:
+			for nextNode in graph[node]:
+				if not nextNode in set(path):
+					if nextNode == end:
+						return path + [nextNode];
+					else:
+						stack.append((nextNode, path + [nextNode]));
+
+	return False
+
+
+def printMaze(maze):
+	for i in range(mazeSize):
+		print(maze[i]);
+
+
+
+#Command line argument is size of the maze. 
+mazeSize = int(sys.argv[1]);
+path = [];
+
+#keep making random mazes until we find one with a path from the top left
+#corner to the bottom right corner. 
+while not path:
+	maze = makeMaze(mazeSize);
+	graph = makeGraph(parseGrid(maze));
+	path = bfs((0, 0), (mazeSize - 1, mazeSize - 1), graph);
+
+printMaze(maze);
+print(path);
