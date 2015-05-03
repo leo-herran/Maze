@@ -97,10 +97,31 @@ def bfs(start, end, graph):
 	return False
 
 
-def printMaze(maze):
-	for i in range(mazeSize):
-		print(maze[i]);
-
+def printMaze(maze, path):
+	mazeSize = len(maze[0]);
+	if not path:
+		for i in range(mazeSize):
+			row = '';
+			for j in range(mazeSize):
+				if maze[i][j] == '0':
+					row += '0';
+				else:
+					row += '.';
+			print(row);
+	else:
+		for i in range(mazeSize):
+			row = '';
+			for j in range(mazeSize):
+				if (i, j) in path:
+					row += getAlphabetIndex(path.index((i, j)));
+				elif maze[i][j] == '0':
+					row += '0';
+				else:
+					row += '.';
+			print(row);
+		
+def getAlphabetIndex(index):
+	return str(chr(ord('a') + index));
 
 
 #Command line argument is size of the maze. 
@@ -114,5 +135,6 @@ while not path:
 	graph = makeGraph(parseGrid(maze));
 	path = bfs((0, 0), (mazeSize - 1, mazeSize - 1), graph);
 
-printMaze(maze);
+printMaze(maze, False);
 print(path);
+printMaze(maze, path);
