@@ -87,10 +87,10 @@ def makeGraph(pairs):
 #Performs a breadth-first search to find the shortest path from the given 
 #starting position to the given end position in the given adjacency-list graph. 
 def bfs(start, end, graph):
-	stack = [(start, [start])];
+	queue = [(start, [start])];
 
-	while stack:
-		(node, path) = stack.pop();
+	while queue:
+		(node, path) = queue.pop();
 		
 		if node in graph:
 			for nextNode in graph[node]:
@@ -98,7 +98,7 @@ def bfs(start, end, graph):
 					if nextNode == end:
 						return path + [nextNode];
 					else:
-						stack.append((nextNode, path + [nextNode]));
+						queue.insert(0, (nextNode, path + [nextNode]));
 
 	return False
 
