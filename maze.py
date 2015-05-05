@@ -102,7 +102,7 @@ def bfs(start, end, graph):
 
 
 #Prints an ASCII representation of the given maze. 
-#Here maze is in char[][] form and path is either a list of tuples from start to 
+#Here maze is in int[][] form and path is either a list of tuples from start to 
 #finish or false (in which case the bare maze will be printed). 
 def printMaze(maze, path):
 	mazeSize = len(maze[0]);
