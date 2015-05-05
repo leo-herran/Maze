@@ -2,9 +2,9 @@
 
 Constructs a square maze of given size via the following process:
 
-1. Randomly generate a 2D character array where each space contains '0' or '.'
+1. Randomly generate a 2D integer array where each space contains 0 or 1. 
 
-2. Parse the grid to find all pairs grid squares containing '0' that are adjacent to each other either horizonally or vertically.  
+2. Parse the grid to find all pairs grid squares containing 0 that are adjacent to each other either horizonally or vertically.  
 
 3. From the list of pairs, construct an adjacency-list graph that represents the possible steps one could take in the maze. 
 
