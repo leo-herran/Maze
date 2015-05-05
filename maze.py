@@ -14,9 +14,9 @@ def makeRandomRow(rowLength):
 	row = [];
 	for i in range(rowLength):
 		if bool(random.getrandbits(1)):
-			row.append('.');
+			row.append(1);
 		else: 
-			row.append('0');
+			row.append(0);
 
 	return row;
 
@@ -28,12 +28,12 @@ def parseGrid(grid):
 	rowLength = len(grid[0]);
 	for i in range(rowLength):
 		for j in range(rowLength):
-			if grid[i][j] == '0':
+			if grid[i][j] == 0:
 				adjacentPositions = getPossibleConnections(i, j, rowLength);
 				for position in adjacentPositions:
 					x = position[0];
 					y = position[1];
-					if grid[x][y] == '0':
+					if grid[x][y] == 0:
 						if not ((x, y), (i, j)) in result:	
 							result.append(((i, j), (x, y)));
 
@@ -69,8 +69,6 @@ def makeGraph(pairs):
 	for pair in pairs:
 		pairOne = pair[0];
 		pairTwo = pair[1];
-
-		if(pairTwo == None): print('what');
 
 		if not pairOne in graph:
 			graph[pairOne] = [pairTwo];
@@ -166,23 +164,27 @@ def getAlphabetStep(index):
 	return str(chr(ord('a') + index));
 
 
-#Command line argument is size of the maze. 
 
-mazeSize = int(sys.argv[1]);
-while mazeSize == 1:
-	print('C\'mon, that\'s not a maze.');
-	mazeSize = int(input('Enter another size: '));
+def main():
+	#Command line argument is size of the maze. 
+	mazeSize = int(sys.argv[1]);
+	while mazeSize <= 1:
+		print('C\'mon, that\'s not a maze.');
+		mazeSize = int(input('Enter another size: '));
 
-path = [];
-#keep making random mazes until we find one with a path from the top left
-#corner to the bottom right corner. 
-while not path:
-	maze = makeMaze(mazeSize);
-	graph = makeGraph(parseGrid(maze));
-	path = bfs((0, 0), (mazeSize - 1, mazeSize - 1), graph);
+	path = [];
+	#keep making random mazes until we find one with a path from the top left
+	#corner to the bottom right corner. 
+	while not path:
+		maze = makeMaze(mazeSize);
+		graph = makeGraph(parseGrid(maze));
+		path = bfs((0, 0), (mazeSize - 1, mazeSize - 1), graph);
 
-print '';
-printMaze(maze, False);
-print '';
-print 'solution:'
-printMaze(maze, path);
+	print '';
+	printMaze(maze, False);
+	print '';
+	print 'solution:'
+	printMaze(maze, path);
+
+if __name__ == "__main__":
+	main()
