@@ -1,6 +1,6 @@
 # Maze
 
-Constructs a square maze of given size via the following process:
+maze.py constructs a square maze of given size via the following process:
 
 1. Randomly generate a 2D integer array where each space contains 0 or 1. 
 
@@ -20,8 +20,7 @@ Some examples are given below.
 
 ![alt text](http://i.imgur.com/ChSEtRY.png "Maze of size ten.")
 
-
-One can in fact generate much better mazes with the same int[][] representation. If one sees a 0 in a grid square, this means there is no wall directly above it, but there is a wall to the left of it. The opposite holds for 1s. The only exception is that the top left square must have no walls to the south and east, every square on the top row must not have a wall to the west, and every square on the left column must not have a wall to the north. 
+betterMaze.py takes advantage of the fact that one can generate much better mazes with the same int[][] representation. If one sees a 0 in a grid square, this means there is no wall directly above it, but there is a wall to the left of it. The opposite holds for 1s. The only exception is that the top left square must have no walls to the south and east, every square on the top row must not have a wall to the west, and every square on the left column must not have a wall to the north. 
 
 Examples are given below. 
 
